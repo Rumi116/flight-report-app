@@ -2,15 +2,35 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import io
+import os
+import urllib.request
+from matplotlib import font_manager
+
+# ----------------- 0. 強制載入中文字型 (終極解決方塊字) -----------------
+@st.cache_resource
+def load_font():
+    # 直接從 Google Fonts 下載 Noto Sans TC (思源黑體)
+    font_url = "https://github.com/google/fonts/raw/main/ofl/notosanstc/NotoSansTC-Regular.ttf"
+    font_path = "NotoSansTC-Regular.ttf"
+    
+    # 如果雲端環境還沒有這個字型檔，就自動下載
+    if not os.path.exists(font_path):
+        urllib.request.urlretrieve(font_url, font_path)
+        
+    # 強制註冊字型到 matplotlib
+    font_manager.fontManager.addfont(font_path)
+    prop = font_manager.FontProperties(fname=font_path)
+    
+    # 將全域字型強制設為剛下載的思源黑體
+    plt.rcParams['font.sans-serif'] = [prop.get_name(), 'sans-serif']
+    plt.rcParams['axes.unicode_minus'] = False
+
+load_font()
 
 # ----------------- 1. 網頁基本設定 -----------------
 st.set_page_config(page_title="航班起降統計報表產生器", page_icon="✈️", layout="wide")
 st.title("✈️ 航班統計報表產生器 (網頁版)")
 st.markdown("**2026.10 V1.0**")
-
-plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'Noto Sans CJK TC', 'Arial']
-plt.rcParams['axes.unicode_minus'] = False
 
 def get_hour(time_val):
     if pd.isna(time_val): return None
@@ -142,18 +162,18 @@ if uploaded_file is not None:
             col1, col2 = st.columns([1, 1])
             
             with col1:
-                st.subheader("預計統計表 (ETA/ETD)")
+                st.subheader("航班起降分時預報表 (ETA/ETD)")
                 fig_table1 = create_table_fig(eta_vals, etd_vals, sch_total_vals, f'航班分時段預計起降統計表 - {target_date_str}')
                 st.pyplot(fig_table1)
 
             if has_actual:
                 with col2:
-                    st.subheader("實際統計表 (ATA/ATD)")
+                    st.subheader("實際航班起降分時表 (ATA/ATD)")
                     fig_table2 = create_table_fig(ata_vals, atd_vals, act_table_total, f'航班分時段實際起降統計表 - {target_date_str}')
                     st.pyplot(fig_table2)
 
             st.markdown("---")
-            st.subheader("分時架次折線圖")
+            st.subheader("航班分時統計圖")
             
             fig_chart, ax = plt.subplots(figsize=(16, 8))
             x = np.arange(len(hours))

@@ -9,18 +9,16 @@ from matplotlib import font_manager
 # ----------------- 0. 強制載入中文字型 (終極解決方塊字) -----------------
 @st.cache_resource
 def load_font():
-    # 改用絕對穩定的開源字型 (台北黑體) 連結
-    font_url = "https://raw.githubusercontent.com/l10n-tw/taipei-sans-tc/master/TaipeiSansTCBeta-Regular.ttf"
-    font_path = "TaipeiSansTCBeta-Regular.ttf"
+    import requests
+    # 改用 requests 套件與更穩定的開源黑體連結
+    font_url = "https://raw.githubusercontent.com/StellarCN/scp_zh/master/fonts/SimHei.ttf"
+    font_path = "SimHei.ttf"
     
     # 如果雲端環境還沒有這個字型檔，就自動下載
     if not os.path.exists(font_path):
-        req = urllib.request.Request(
-            font_url, 
-            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-        )
-        with urllib.request.urlopen(req) as response, open(font_path, 'wb') as out_file:
-            out_file.write(response.read())
+        response = requests.get(font_url)
+        with open(font_path, 'wb') as f:
+            f.write(response.content)
             
     # 強制註冊字型到 matplotlib
     font_manager.fontManager.addfont(font_path)
@@ -31,7 +29,6 @@ def load_font():
     plt.rcParams['axes.unicode_minus'] = False
 
 load_font()
-
 # ----------------- 1. 網頁基本設定 -----------------
 st.set_page_config(page_title="航班起降統計報表產生器", page_icon="✈️", layout="wide")
 st.title("✈️ 航班統計報表產生器 (網頁版)")

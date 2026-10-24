@@ -7,7 +7,7 @@ import io
 # ----------------- 1. 網頁基本設定 -----------------
 st.set_page_config(page_title="航班起降統計報表產生器", page_icon="✈️", layout="wide")
 st.title("✈️ 航班統計報表產生器 (網頁版)")
-st.markdown("**2026.10 V1.0** | 避開執行檔限制，直接在網頁上傳 Excel 檔案自動產出報表圖檔。")
+st.markdown("**2026.10 V1.0**")
 
 plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'Noto Sans CJK TC', 'Arial']
 plt.rcParams['axes.unicode_minus'] = False

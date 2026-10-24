@@ -49,7 +49,7 @@ with col_logo:
     if os.path.exists("logo.png"):
         # 稍微縮小寬度並靠右
         st.markdown("<div style='text-align: right;'>", unsafe_allow_html=True)
-        st.image("logo.png", width=100)
+        st.image("logo.png", width=200)
         st.markdown("</div>", unsafe_allow_html=True)
 def get_hour(time_val):
     if pd.isna(time_val): return None

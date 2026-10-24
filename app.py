@@ -31,6 +31,14 @@ def load_font():
 load_font()
 # ----------------- 1. 網頁基本設定 -----------------
 st.set_page_config(page_title="航班起降統計報表產生器", page_icon="✈️", layout="wide")
+# 【新增】隱藏右上角 GitHub 連結與頂部工具列
+st.markdown("""
+    <style>
+    [data-testid="stHeader"] {
+        display: none;
+    }
+    </style>
+""", unsafe_allow_html=True)
 st.title("✈️ 航班統計報表產生器 (網頁版)")
 st.markdown("**2026.10 V1.0**")
 

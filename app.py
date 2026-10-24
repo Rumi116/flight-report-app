@@ -48,7 +48,7 @@ with col_title:
 with col_logo:
     # 如果 GitHub 專案裡有 logo.png，就會自動顯示在右上角
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=140)
+        st.image("logo.png", width=180)
 
 def get_hour(time_val):
     if pd.isna(time_val): return None

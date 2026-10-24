@@ -181,13 +181,13 @@ if uploaded_file is not None:
             
             with col1:
                 st.subheader("航班起降分時預報表 (ETA/ETD)")
-                fig_table1 = create_table_fig(eta_vals, etd_vals, sch_total_vals, f'航班分時段預計起降統計表 - {target_date_str}')
+                fig_table1 = create_table_fig(eta_vals, etd_vals, sch_total_vals, f'航班分時預計起降統計表 - {target_date_str}')
                 st.pyplot(fig_table1)
 
             if has_actual:
                 with col2:
                     st.subheader("實際航班起降分時表 (ATA/ATD)")
-                    fig_table2 = create_table_fig(ata_vals, atd_vals, act_table_total, f'航班分時段實際起降統計表 - {target_date_str}')
+                    fig_table2 = create_table_fig(ata_vals, atd_vals, act_table_total, f'航班分時實際起降統計表 - {target_date_str}')
                     st.pyplot(fig_table2)
 
             st.markdown("---")

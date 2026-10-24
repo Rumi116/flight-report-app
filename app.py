@@ -10,28 +10,26 @@ from matplotlib import font_manager
 @st.cache_resource
 def load_font():
     import requests
-    # 改用 requests 套件與更穩定的開源黑體連結
     font_url = "https://raw.githubusercontent.com/StellarCN/scp_zh/master/fonts/SimHei.ttf"
     font_path = "SimHei.ttf"
     
-    # 如果雲端環境還沒有這個字型檔，就自動下載
     if not os.path.exists(font_path):
         response = requests.get(font_url)
         with open(font_path, 'wb') as f:
             f.write(response.content)
             
-    # 強制註冊字型到 matplotlib
     font_manager.fontManager.addfont(font_path)
     prop = font_manager.FontProperties(fname=font_path)
     
-    # 將全域字型強制設為剛下載的中文字型
     plt.rcParams['font.sans-serif'] = [prop.get_name(), 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
 
 load_font()
+
 # ----------------- 1. 網頁基本設定 -----------------
 st.set_page_config(page_title="航班起降統計報表產生器", page_icon="✈️", layout="wide")
-# 【新增】隱藏右上角 GitHub 連結與頂部工具列
+
+# 隱藏右上角 GitHub 連結與頂部工具列
 st.markdown("""
     <style>
     [data-testid="stHeader"] {
@@ -39,6 +37,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
 st.title("✈️ 航班統計報表產生器 (網頁版)")
 st.markdown("**2026.10 V1.0**")
 
@@ -66,16 +65,22 @@ if uploaded_file is not None:
             else:
                 target_date_str = '2026-10-24'
                 
-            # 清理並準備乾淨的班號欄位（用於嚴格防呆過濾）
-            df['入境_clean'] = df['入境'].astype(str).replace('nan', '').str.strip() if '入境' in df.columns else ''
-            df['出境_clean'] = df['出境'].astype(str).replace('nan', '').str.strip() if '出境' in df.columns else ''
+            # 【核心修正】強力清理班號欄位：徹底清除隱形空白、\xa0、nan，確保與單機版過濾邏輯完全一致
+            def clean_flight_no(val):
+                if pd.isna(val): return ''
+                s = str(val).replace('\xa0', '').strip()
+                if s.lower() in ['nan', 'none', '']: return ''
+                return s
+
+            df['入境_clean'] = df['入境'].apply(clean_flight_no) if '入境' in df.columns else ''
+            df['出境_clean'] = df['出境'].apply(clean_flight_no) if '出境' in df.columns else ''
                 
             df['ETA_Date_Str'] = df['ETA(D)'].astype(str).str[:10] if 'ETA(D)' in df.columns else target_date_str
             df['ETD_Date_Str'] = df['ETD(D)'].astype(str).str[:10] if 'ETD(D)' in df.columns else target_date_str
             df['Arr_Hour'] = df['ETA'].apply(get_hour) if 'ETA' in df.columns else None
             df['Dep_Hour'] = df['ETD'].apply(get_hour) if 'ETD' in df.columns else None
             
-            # 預計起降防呆過濾（必須有對應班號才計算）
+            # 預計起降防呆過濾
             mask_eta = (df['ETA_Date_Str'] == target_date_str) & (df['入境_clean'] != '')
             mask_etd = (df['ETD_Date_Str'] == target_date_str) & (df['出境_clean'] != '')
             
@@ -104,7 +109,7 @@ if uploaded_file is not None:
                 df['ATA_Hour'] = df['ATA'].apply(get_hour)
                 df['ATD_Hour'] = df['ATD'].apply(get_hour)
                 
-                # 實際起降防呆過濾（必須有對應班號才計算，徹底剃除幽靈 00:00）
+                # 實際起降防呆過濾
                 mask_ata = (df['ATA_Date_Str'] == target_date_str) & (df['入境_clean'] != '')
                 mask_atd = (df['ATD_Date_Str'] == target_date_str) & (df['出境_clean'] != '')
                 

@@ -38,8 +38,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("✈️ 航班統計報表產生器 (網頁版)")
-st.markdown("**2026.10 V1.0**")
+# 【左右分欄設計】左側放標題與版本，右側放 Logo 圖片
+col_title, col_logo = st.columns([5, 1])
+
+with col_title:
+    st.title("✈️ 航班統計報表產生器")
+    st.markdown("**2026.10 V1.0**")
+
+with col_logo:
+    # 如果 GitHub 專案裡有 logo.png，就會自動顯示在右上角
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=140)
 
 def get_hour(time_val):
     if pd.isna(time_val): return None

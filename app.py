@@ -38,18 +38,19 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 【左右分欄設計】左側放標題與版本，右側放 Logo 圖片
-col_title, col_logo = st.columns([5, 1])
+# 【左右分欄設計微調】調整比例讓標題與 Logo 距離拉近，Logo 靠右對齊
+col_title, col_logo = st.columns([6, 1])
 
 with col_title:
-    st.title("✈️ 航班統計報表產生器")
+    st.title("✈️ 航班統計報表產生器 (網頁版)")
     st.markdown("**2026.10 V1.0**")
 
 with col_logo:
-    # 如果 GitHub 專案裡有 logo.png，就會自動顯示在右上角
     if os.path.exists("logo.png"):
+        # 稍微縮小寬度並靠右
+        st.markdown("<div style='text-align: right;'>", unsafe_allow_html=True)
         st.image("logo.png", width=180)
-
+        st.markdown("</div>", unsafe_allow_html=True)
 def get_hour(time_val):
     if pd.isna(time_val): return None
     time_str = str(time_val).strip()

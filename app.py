@@ -9,14 +9,19 @@ from matplotlib import font_manager
 # ----------------- 0. 強制載入中文字型 (終極解決方塊字) -----------------
 @st.cache_resource
 def load_font():
-    # 直接從 Google Fonts 下載 Noto Sans TC (思源黑體)
-    font_url = "https://github.com/google/fonts/raw/main/ofl/notosanstc/NotoSansTC-Regular.ttf"
+    # 改用 raw.githubusercontent 連結
+    font_url = "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstc/NotoSansTC-Regular.ttf"
     font_path = "NotoSansTC-Regular.ttf"
     
-    # 如果雲端環境還沒有這個字型檔，就自動下載
     if not os.path.exists(font_path):
-        urllib.request.urlretrieve(font_url, font_path)
-        
+        # 加上 User-Agent 偽裝成瀏覽器，避免被 GitHub 阻擋下載
+        req = urllib.request.Request(
+            font_url, 
+            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        )
+        with urllib.request.urlopen(req) as response, open(font_path, 'wb') as out_file:
+            out_file.write(response.read())
+            
     # 強制註冊字型到 matplotlib
     font_manager.fontManager.addfont(font_path)
     prop = font_manager.FontProperties(fname=font_path)

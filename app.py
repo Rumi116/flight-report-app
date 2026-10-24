@@ -58,7 +58,7 @@ if uploaded_file is not None:
             df = pd.read_excel(uploaded_file)
             df.columns = df.columns.str.strip()
             
-            # 判斷基準日期
+           # 判斷基準日期
             if '班機日期' in df.columns:
                 target_date_str = str(df['班機日期'].mode()[0])[:10]
             elif 'ETA(D)' in df.columns:
@@ -66,6 +66,7 @@ if uploaded_file is not None:
             else:
                 target_date_str = '2026-10-24'
                 
+            # 清理並準備乾淨的班號欄位（用於嚴格防呆過濾）
             df['入境_clean'] = df['入境'].astype(str).replace('nan', '').str.strip() if '入境' in df.columns else ''
             df['出境_clean'] = df['出境'].astype(str).replace('nan', '').str.strip() if '出境' in df.columns else ''
                 
@@ -74,6 +75,7 @@ if uploaded_file is not None:
             df['Arr_Hour'] = df['ETA'].apply(get_hour) if 'ETA' in df.columns else None
             df['Dep_Hour'] = df['ETD'].apply(get_hour) if 'ETD' in df.columns else None
             
+            # 預計起降防呆過濾（必須有對應班號才計算）
             mask_eta = (df['ETA_Date_Str'] == target_date_str) & (df['入境_clean'] != '')
             mask_etd = (df['ETD_Date_Str'] == target_date_str) & (df['出境_clean'] != '')
             
@@ -102,6 +104,7 @@ if uploaded_file is not None:
                 df['ATA_Hour'] = df['ATA'].apply(get_hour)
                 df['ATD_Hour'] = df['ATD'].apply(get_hour)
                 
+                # 實際起降防呆過濾（必須有對應班號才計算，徹底剃除幽靈 00:00）
                 mask_ata = (df['ATA_Date_Str'] == target_date_str) & (df['入境_clean'] != '')
                 mask_atd = (df['ATD_Date_Str'] == target_date_str) & (df['出境_clean'] != '')
                 

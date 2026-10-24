@@ -9,12 +9,12 @@ from matplotlib import font_manager
 # ----------------- 0. 強制載入中文字型 (終極解決方塊字) -----------------
 @st.cache_resource
 def load_font():
-    # 改用 raw.githubusercontent 連結
-    font_url = "https://raw.githubusercontent.com/google/fonts/main/ofl/notosanstc/NotoSansTC-Regular.ttf"
-    font_path = "NotoSansTC-Regular.ttf"
+    # 改用絕對穩定的開源字型 (台北黑體) 連結
+    font_url = "https://raw.githubusercontent.com/l10n-tw/taipei-sans-tc/master/TaipeiSansTCBeta-Regular.ttf"
+    font_path = "TaipeiSansTCBeta-Regular.ttf"
     
+    # 如果雲端環境還沒有這個字型檔，就自動下載
     if not os.path.exists(font_path):
-        # 加上 User-Agent 偽裝成瀏覽器，避免被 GitHub 阻擋下載
         req = urllib.request.Request(
             font_url, 
             headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
@@ -26,7 +26,7 @@ def load_font():
     font_manager.fontManager.addfont(font_path)
     prop = font_manager.FontProperties(fname=font_path)
     
-    # 將全域字型強制設為剛下載的思源黑體
+    # 將全域字型強制設為剛下載的中文字型
     plt.rcParams['font.sans-serif'] = [prop.get_name(), 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
 

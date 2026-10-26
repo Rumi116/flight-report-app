@@ -37,7 +37,10 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-# 【新增】用 CSS 同時隱藏頂部工具列與右下角的 Streamlit 標章/頭像
+# ----------------- 1. 網頁基本設定 -----------------
+st.set_page_config(page_title="航班起降統計報表產生器", page_icon="✈️", layout="wide")
+
+# 【強力隱藏】透過多重選擇器與絕對定位將右下角頭像/徽章完全遮蔽
 st.markdown("""
     <style>
     [data-testid="stHeader"] {
@@ -45,11 +48,31 @@ st.markdown("""
     }
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    .viewerBadge_container__1QSob {visibility: hidden;}
-    div[class*="viewerBadge"] {display: none !important;}
+    
+    /* 針對 Streamlit 右下角浮動標章與頭像的全面封鎖 */
+    .stApp > div:last-child {
+        display: none !important;
+    }
+    iframe[src*="streamlit.app"] {
+        display: none !important;
+    }
+    div[class*="viewerBadge"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    /* 在右下角疊加一層覆蓋隱形區塊，確保萬無一失 */
+    body::after {
+        content: "";
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 60px;
+        height: 60px;
+        z-index: 999999;
+        pointer-events: none;
+    }
     </style>
 """, unsafe_allow_html=True)
-
 # 【左右分欄設計微調】調整比例讓標題與 Logo 距離拉近，Logo 靠右對齊
 col_title, col_logo = st.columns([6, 1])
 

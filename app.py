@@ -58,6 +58,19 @@ def get_hour(time_val):
     if len(time_str) >= 2: return time_str[:2]
     return None
 
+# 【新增】用 CSS 同時隱藏頂部工具列與右下角的 Streamlit 標章/頭像
+st.markdown("""
+    <style>
+    [data-testid="stHeader"] {
+        display: none;
+    }
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    .viewerBadge_container__1QSob {visibility: hidden;}
+    div[class*="viewerBadge"] {display: none !important;}
+    </style>
+""", unsafe_allow_html=True)
+
 # ----------------- 2. 檔案上傳與處理區 -----------------
 uploaded_file = st.file_uploader("📂 請拖曳或點擊選擇 Excel 檔案 (.xls, .xlsx)", type=['xls', 'xlsx'])
 

@@ -4,3 +4,7 @@ primaryColor = "#37a794"
 backgroundColor = "#0e1117"
 secondaryBackgroundColor = "#262730"
 textColor = "#fafafa"
+
+[client]
+# 將工具列或開發者標章模式設為 viewer，即可隱藏右下角的開發者頭像
+toolbarMode = "viewer"
